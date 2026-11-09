@@ -395,20 +395,26 @@ body.nav-open .header, body.cart-open .header { transform: none; }
 .to-top__ring { stroke: var(--mustard); stroke-linecap: round; stroke-dasharray: 157.08; stroke-dashoffset: 157.08; }
 .to-top span { position: relative; }
 
-/* Custom cursor (enabled from JS only for fine pointers without reduced motion) */
+/* Custom "ember" cursor (enabled from JS only for fine pointers without reduced motion) */
 .has-cursor, .has-cursor * { cursor: none !important; }
 .has-cursor input, .has-cursor textarea { cursor: text !important; }
-.cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; border-radius: 50%; transition: opacity .25s; }
-.cursor-dot { width: 8px; height: 8px; margin: -4px 0 0 -4px; background: var(--red); box-shadow: 0 0 0 2px var(--cream); }
-.cursor-ring { width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 2px solid var(--ink); display: grid; place-items: center; transition: scale .35s cubic-bezier(.3, 1.5, .5, 1), background .25s, border-color .25s, opacity .25s; }
-.cursor-ring img { width: 70%; height: auto; opacity: 0; scale: .3; rotate: -40deg; transition: opacity .25s, scale .4s cubic-bezier(.3, 1.6, .5, 1), rotate .4s cubic-bezier(.3, 1.6, .5, 1); filter: drop-shadow(1px 2px 0 rgba(29, 20, 16, .35)); }
-.cursor-ring.is-link { scale: 1.7; border-width: 3px; }
-.cursor-ring.is-fruit { scale: 1.9; background: var(--mustard); border-color: var(--ink); }
-.cursor-ring.is-fruit img { opacity: 1; scale: 1; rotate: 0deg; animation: cursorWiggle 1.6s ease-in-out infinite; }
-@keyframes cursorWiggle { 0%, 100% { rotate: -10deg; } 50% { rotate: 10deg; } }
-.cursor-ring.is-text { scale: .5; opacity: .4; }
-.cursor-ring.is-down { scale: .8; }
-.cursor-ring.is-link.is-down, .cursor-ring.is-fruit.is-down { scale: 1.3; }
+.cursor-trail { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9997; pointer-events: none; }
+.cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; transition: opacity .25s; }
+.cursor-dot { width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff6c8, var(--mustard) 35%, var(--orange) 60%, var(--red)); box-shadow: 0 0 10px 2px rgba(240, 138, 36, .7), 0 0 0 2px var(--ink); animation: ember 1.2s ease-in-out infinite alternate; }
+@keyframes ember { from { box-shadow: 0 0 6px 1px rgba(240, 138, 36, .5), 0 0 0 2px var(--ink); } to { box-shadow: 0 0 16px 5px rgba(215, 38, 30, .55), 0 0 0 2px var(--ink); } }
+.cursor-ring { z-index: 9998; width: 100px; height: 100px; margin: -50px 0 0 -50px; display: grid; place-items: center; }
+.cursor-ring__blob { grid-area: 1 / 1; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; transition: width .4s cubic-bezier(.3, 1.5, .5, 1), height .4s cubic-bezier(.3, 1.5, .5, 1), background .25s, border-color .25s, opacity .25s; }
+.cursor-ring__blob img { width: 72%; height: auto; opacity: 0; scale: .2; rotate: -60deg; transition: opacity .2s, scale .45s cubic-bezier(.3, 1.6, .5, 1), rotate .45s cubic-bezier(.3, 1.6, .5, 1); }
+.cursor-ring__label { grid-area: 1 / 1; width: 100%; height: 100%; opacity: 0; scale: .6; transition: opacity .3s, scale .45s cubic-bezier(.3, 1.5, .5, 1); animation: labelSpin 7s linear infinite; overflow: visible; }
+.cursor-ring__label text { font: 900 10.5px var(--body); letter-spacing: .5px; fill: var(--ink); paint-order: stroke; stroke: var(--cream); stroke-width: 3px; stroke-linejoin: round; }
+@keyframes labelSpin { to { rotate: 360deg; } }
+.cursor-ring.is-link .cursor-ring__blob { width: 58px; height: 58px; border: 3px solid var(--red); background: rgba(244, 195, 49, .25); }
+.cursor-ring.is-fruit .cursor-ring__blob { width: 64px; height: 64px; border: 3px solid var(--ink); background: var(--mustard); }
+.cursor-ring.is-fruit .cursor-ring__blob img { opacity: 1; scale: 1; rotate: 0deg; }
+.cursor-ring.is-link .cursor-ring__label, .cursor-ring.is-fruit .cursor-ring__label { opacity: 1; scale: 1; }
+.cursor-ring.is-text .cursor-ring__blob { width: 14px; height: 14px; opacity: .3; }
+.cursor-ring.is-down .cursor-ring__blob { width: 24px; height: 24px; }
+.cursor-ring.is-link.is-down .cursor-ring__blob, .cursor-ring.is-fruit.is-down .cursor-ring__blob { width: 46px; height: 46px; }
 .has-cursor:has(.cursor-ring.is-fruit) .cursor-dot { opacity: 0; }
 .cursor-out .cursor-dot, .cursor-out .cursor-ring { opacity: 0; }
 
