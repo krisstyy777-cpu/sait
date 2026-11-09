@@ -450,41 +450,115 @@ if (finePointer && !reduceMotion) {
     });
   });
 
-  // Custom cursor: dot follows instantly, cRing trails with easing and morphs over targets
+  // Custom cursor "ember": glowing dot, a trailing ring that stretches with speed,
+  // a rotating label over targets, and a canvas trail of sparks and smoke
+  const root = document.documentElement;
   const dot = document.createElement("div");
   const cRing = document.createElement("div");
+  const cv = document.createElement("canvas");
   dot.className = "cursor-dot";
   cRing.className = "cursor-ring";
-  cRing.innerHTML = `<img alt="" />`;
-  dot.setAttribute("aria-hidden", "true");
-  cRing.setAttribute("aria-hidden", "true");
-  document.body.append(dot, cRing);
-  document.documentElement.classList.add("has-cursor");
+  cv.className = "cursor-trail";
+  cRing.innerHTML = `<span class="cursor-ring__blob"><img alt="" /></span>
+    <svg class="cursor-ring__label" viewBox="0 0 100 100"><defs><path id="cursorCircle" d="M50 50m-41 0a41 41 0 1 1 82 0a41 41 0 1 1-82 0" /></defs>
+    <text><textPath href="#cursorCircle" textLength="255" lengthAdjust="spacing"></textPath></text></svg>`;
+  [dot, cRing, cv].forEach((el) => el.setAttribute("aria-hidden", "true"));
+  document.body.append(cv, cRing, dot);
+  root.classList.add("has-cursor");
+  const blob = cRing.querySelector(".cursor-ring__blob");
   const cRingImg = cRing.querySelector("img");
-  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+  const label = cRing.querySelector("textPath");
+  const ctx = cv.getContext("2d");
+  const fit = () => {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    cv.width = innerWidth * d;
+    cv.height = innerHeight * d;
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+  };
+  fit();
+  addEventListener("resize", fit);
+
+  const parts = [];
+  const spark = (x, y, speed = 1) => {
+    const a = Math.random() * Math.PI * 2;
+    const v = (0.4 + Math.random() * 1.6) * speed;
+    parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.6 * speed, life: 0, max: 30 + Math.random() * 30, size: 1.2 + Math.random() * 2, hue: 15 + Math.random() * 35, smoke: false });
+  };
+  const smoke = (x, y) =>
+    parts.push({ x, y, vx: (Math.random() - 0.5) * 0.6, vy: -0.4 - Math.random() * 0.5, life: 0, max: 50 + Math.random() * 30, size: 3 + Math.random() * 3, smoke: true });
+
+  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, px = mx, py = my, travel = 0;
   addEventListener("mousemove", (e) => {
     mx = e.clientX;
     my = e.clientY;
     dot.style.translate = `${mx}px ${my}px`;
-    document.documentElement.classList.remove("cursor-out");
+    root.classList.remove("cursor-out");
   }, { passive: true });
-  document.addEventListener("mouseleave", () => document.documentElement.classList.add("cursor-out"));
-  addEventListener("mousedown", () => cRing.classList.add("is-down"));
+  document.addEventListener("mouseleave", () => root.classList.add("cursor-out"));
+  addEventListener("mousedown", () => {
+    cRing.classList.add("is-down");
+    for (let i = 0; i < 18; i++) spark(mx, my, 2.4);
+  });
   addEventListener("mouseup", () => cRing.classList.remove("is-down"));
+
+  const repeat = (word) => Array(Math.max(2, Math.round(26 / (word.length + 3)))).fill(word + " ✦ ").join("");
   document.addEventListener("mouseover", (e) => {
     const t = e.target;
     const product = t.closest(".product__img");
     const text = t.closest("input, textarea");
+    const link = !product && !text && t.closest("a, button, summary, label, [role=button]");
     cRing.classList.toggle("is-text", !!text);
-    cRing.classList.toggle("is-link", !product && !text && !!t.closest("a, button, summary, label, [role=button]"));
+    cRing.classList.toggle("is-link", !!link);
     cRing.classList.toggle("is-fruit", !!product);
-    if (product) cRingImg.src = fruitSrc(findItem(product.closest(".product").id.slice(2)).fruits[0]);
+    if (product) {
+      const item = findItem(product.closest(".product").id.slice(2));
+      cRingImg.src = fruitSrc(item.fruits[0]);
+      label.textContent = repeat(item.short.toUpperCase());
+    } else if (link) {
+      label.textContent = repeat(link.matches(".add, [data-add]") ? "В КОРЗИНУ" : "ЖМИ");
+    }
   });
-  (function follow() {
-    rx += (mx - rx) * 0.18;
-    ry += (my - ry) * 0.18;
+
+  (function frame() {
+    rx += (mx - rx) * 0.16;
+    ry += (my - ry) * 0.16;
+    const dx = mx - rx, dy = my - ry;
+    const stretch = Math.min(Math.hypot(dx, dy) / 90, 0.35);
     cRing.style.translate = `${rx}px ${ry}px`;
-    requestAnimationFrame(follow);
+    blob.style.transform = `rotate(${Math.atan2(dy, dx)}rad) scale(${1 + stretch}, ${1 - stretch * 0.6})`;
+
+    const moved = Math.hypot(mx - px, my - py);
+    if (moved > 0.5 && !root.classList.contains("cursor-out")) {
+      travel += moved;
+      for (let i = 0; i < Math.min(moved / 10, 3); i++) spark(mx, my, 0.6);
+      while (travel > 22) { smoke(mx, my); travel -= 22; }
+    }
+    px = mx;
+    py = my;
+    if (parts.length > 260) parts.splice(0, parts.length - 260);
+
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.life++;
+      const k = p.life / p.max;
+      if (k >= 1) { parts.splice(i, 1); continue; }
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.96;
+      ctx.beginPath();
+      if (p.smoke) {
+        p.vy *= 0.99;
+        ctx.fillStyle = `rgba(58, 42, 34, ${0.16 * (1 - k)})`;
+        ctx.arc(p.x, p.y, p.size + k * 16, 0, Math.PI * 2);
+      } else {
+        p.vy = p.vy * 0.96 - 0.03;
+        ctx.fillStyle = `hsla(${p.hue - k * 20}, 100%, ${60 - k * 25}%, ${1 - k})`;
+        ctx.arc(p.x, p.y, p.size * (1 - k * 0.5), 0, Math.PI * 2);
+      }
+      ctx.fill();
+    }
+    requestAnimationFrame(frame);
   })();
 }
 
