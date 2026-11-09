@@ -109,10 +109,26 @@ h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); }
 .product__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: scale .8s cubic-bezier(.2, .8, .2, 1), rotate .8s cubic-bezier(.2, .8, .2, 1); }
 .product:hover .product__img img { scale: 1.12; rotate: -3deg; }
 .product__img .tag { z-index: 3; }
-/* Ingredient emoji drift up out of the photo on hover */
-.femoji { position: absolute; left: var(--x); bottom: -10%; z-index: 2; font-size: 2rem; opacity: 0; pointer-events: none; filter: drop-shadow(2px 3px 0 rgba(29, 20, 16, .35)); }
-.product:hover .femoji { animation: rise 2.2s cubic-bezier(.3, .6, .4, 1) var(--d) infinite; }
-@keyframes rise { 0% { opacity: 0; transform: translateY(0) rotate(0) scale(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-340px) rotate(200deg) scale(1.2); } }
+/* Fruit cut-outs float up out of the photo on hover; rise and sway animate separate properties so they combine */
+.product__img .fruit { position: absolute; left: var(--x); bottom: -14%; z-index: 2; width: clamp(56px, 24%, 92px); height: auto; object-fit: contain; opacity: 0; pointer-events: none; filter: drop-shadow(3px 5px 0 rgba(29, 20, 16, .3)); transition: none; }
+.product:hover .product__img .fruit { animation: fruitRise 2.8s cubic-bezier(.25, .7, .35, 1) var(--d) infinite, fruitSway 1.4s ease-in-out var(--d) infinite alternate; }
+@keyframes fruitRise {
+  0% { opacity: 0; translate: 0 0; scale: .4; }
+  15% { opacity: 1; scale: 1.1; }
+  25% { scale: .95; }
+  35% { scale: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; translate: 0 -330px; scale: .8; }
+}
+@keyframes fruitSway { from { rotate: calc(var(--r) * -14deg); } to { rotate: calc(var(--r) * 16deg); } }
+/* Touch screens have no hover: two fruits peek from the corners and bob instead */
+@media (hover: none) {
+  .product__img .fruit { opacity: 1; bottom: -3%; width: clamp(44px, 20%, 76px); animation: fruitBob 3.2s ease-in-out var(--d) infinite, fruitSway 2.4s ease-in-out var(--d) infinite alternate; }
+  .product__img .fruit:nth-of-type(2) { left: 4%; }
+  .product__img .fruit:nth-of-type(3) { display: none; }
+  .product__img .fruit:nth-of-type(4) { left: auto; right: 4%; }
+}
+@keyframes fruitBob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -12px; } }
 .product.flash { animation: flash 1.6s ease; }
 @keyframes flash { 0%, 100% { box-shadow: 0 0 0 0 rgba(215, 38, 30, 0); } 15%, 55% { box-shadow: 0 0 0 10px var(--mustard), 0 0 0 16px var(--red); } 25% { rotate: -3deg; } 40% { rotate: 3deg; } 50% { rotate: 0deg; } }
 .tag { position: absolute; top: .8rem; left: .8rem; background: var(--ink); color: var(--cream); font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: .25rem .6rem; border-radius: 999px; }
@@ -201,9 +217,11 @@ body.cart-open .cart { transform: none; }
 .cart-item__img b { position: absolute; right: 2px; bottom: 2px; background: var(--mustard); border: 2px solid var(--ink); border-radius: 999px; font-size: .65rem; padding: 0 .3rem; }
 .cart-item { animation: heroIn .4s ease; }
 
-/* Add-to-cart flight + emoji burst */
+/* Add-to-cart flight + fruit burst */
 .fly { position: fixed; z-index: 80; pointer-events: none; aspect-ratio: 600 / 920; object-fit: cover; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 6px 8px 0 rgba(29, 20, 16, .3); }
-.burst { position: fixed; z-index: 81; pointer-events: none; font-size: 1.8rem; line-height: 1; }
+.burst { position: fixed; z-index: 81; pointer-events: none; height: auto; filter: drop-shadow(2px 4px 0 rgba(29, 20, 16, .3)); }
+.juice { position: fixed; z-index: 80; pointer-events: none; border-radius: 50%; border: 2px solid var(--ink); }
+.burst-ring { position: fixed; z-index: 79; pointer-events: none; width: 60px; height: 60px; border-radius: 50%; border: 4px solid; }
 .cart-btn.gulp { animation: gulp .55s cubic-bezier(.3, 1.6, .5, 1); }
 @keyframes gulp { 30% { transform: scale(1.25) rotate(-8deg); } 60% { transform: scale(.92) rotate(5deg); } }
 .cart-item strong { display: block; font-size: .95rem; }
@@ -385,7 +403,7 @@ body.nav-open .header, body.cart-open .header { transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-in, .hcard__float, .split .word > span, .scroll-hint, .reveal { opacity: 1 !important; translate: none !important; scale: 1 !important; }
-  .femoji { display: none; }
+  .product__img .fruit { display: none; }
   .hero__sticker { scale: 1; }
   .hero h1 em { background-size: 100% 38%; }
   .grain { display: none; }
