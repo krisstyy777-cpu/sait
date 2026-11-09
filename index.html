@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ДЫМОК — крафтовые BBQ-соусы малыми партиями</title>
+  <meta name="description" content="BBQ-соусы из настоящих продуктов: без кукурузного сиропа, без рафинированных масел, без консервантов. Варим малыми партиями." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>🔥 Бесплатная доставка от 3 бутылок</span><span>★ Сет из 3 соусов — дешевле на 400 ₽</span><span>🌶 Варим малыми партиями</span><span>✕ Без кукурузного сиропа</span>
+      <span>🔥 Бесплатная доставка от 3 бутылок</span><span>★ Сет из 3 соусов — дешевле на 400 ₽</span><span>🌶 Варим малыми партиями</span><span>✕ Без кукурузного сиропа</span>
+    </div>
+  </div>
+
+  <header class="header">
+    <a href="#top" class="logo">ДЫМОК<span>sauce co.</span></a>
+    <nav class="nav" id="nav">
+      <a href="#shop">Магазин</a>
+      <a href="#about">О шефе</a>
+      <a href="#faq">Вопросы</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+    <div class="header__actions">
+      <button class="cart-btn" id="cartOpen" aria-label="Корзина">Корзина <span class="cart-count" id="cartCount">0</span></button>
+      <button class="burger" id="burger" aria-label="Меню"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero__blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="hero__text">
+        <p class="eyebrow hero-in" style="--d:.1s">Крафтовый BBQ-соус · малые партии</p>
+        <h1 class="split">Соус, рядом с&nbsp;которым другие соусы <em>комплексуют</em></h1>
+        <p class="lead hero-in" style="--d:.9s">Делаем соусы из настоящих продуктов — как будто на дворе 1800-й. Намажьте на что угодно с гриля и сделайте удивлённое лицо, когда вас похвалят за готовку.</p>
+        <div class="hero__cta hero-in" style="--d:1.05s">
+          <a href="#shop" class="btn btn--primary magnetic">Выбрать соус</a>
+          <a href="#about" class="btn btn--ghost">Кто это варит?</a>
+        </div>
+      </div>
+      <div class="hero__stack" id="heroStack"></div>
+      <div class="hero__sticker" id="sticker">100%<br />без<br />химии</div>
+      <a href="#features" class="scroll-hint" aria-label="Прокрутить вниз">
+        <span class="scroll-hint__mouse"><span></span></span>
+        <span class="scroll-hint__text">листай</span>
+      </a>
+    </section>
+
+    <section class="pillars" id="features">
+      <article class="pillar">
+        <div class="pillar__icon" aria-hidden="true">
+          <svg class="ico" viewBox="0 0 100 100">
+            <circle class="ico__bg" cx="50" cy="50" r="46" />
+            <g class="ico__obj"><g transform="rotate(-30 50 50)">
+              <path d="M50 14c10 0 15 14 15 34s-5 34-15 34-15-14-15-34 5-34 15-34z" fill="#f4c331" stroke="#1d1410" stroke-width="3" />
+              <path d="M37 30h26M36 40h28M35 50h30M36 60h28M38 70h24M43 18v60M57 18v60" stroke="#1d1410" stroke-width="2" opacity=".3" />
+              <path d="M50 88c-15-2-25-15-27-37 9 6 15 17 19 29z" fill="#5aa832" stroke="#1d1410" stroke-width="3" stroke-linejoin="round" />
+              <path d="M50 88c15-2 25-15 27-37-9 6-15 17-19 29z" fill="#3f8a22" stroke="#1d1410" stroke-width="3" stroke-linejoin="round" />
+            </g></g>
+            <circle class="ico__ban" cx="50" cy="50" r="40" pathLength="1" transform="rotate(-135 50 50)" />
+            <path class="ico__ban ico__ban--slash" d="M21.7 21.7L78.3 78.3" pathLength="1" />
+          </svg>
+        </div>
+        <h3>Без кукурузного сиропа</h3>
+        <p>Сладко — это нормально. Сладко как в лаборатории — нет. Поэтому глюкозно-фруктозный сироп остался на нижней полке магазина.</p>
+      </article>
+      <article class="pillar">
+        <div class="pillar__icon" aria-hidden="true">
+          <svg class="ico" viewBox="0 0 100 100">
+            <circle class="ico__bg" cx="50" cy="50" r="46" />
+            <g class="ico__obj">
+              <rect x="38" y="11" width="16" height="7" rx="2" fill="#1d1410" />
+              <path d="M40 18h12v8l7 9v47a6 6 0 0 1-6 6H39a6 6 0 0 1-6-6V35l7-9z" fill="#fff4cf" />
+              <path d="M33 52h26v30a6 6 0 0 1-6 6H39a6 6 0 0 1-6-6z" fill="#f0a020" />
+              <path d="M40 18h12v8l7 9v47a6 6 0 0 1-6 6H39a6 6 0 0 1-6-6V35l7-9z" fill="none" stroke="#1d1410" stroke-width="3" stroke-linejoin="round" />
+              <path d="M38 40v14" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".8" />
+              <path class="ico__drop" d="M70 42s-8 10-8 15a8 8 0 0 0 16 0c0-5-8-15-8-15z" fill="#f4c331" stroke="#1d1410" stroke-width="3" stroke-linejoin="round" />
+            </g>
+            <circle class="ico__ban" cx="50" cy="50" r="40" pathLength="1" transform="rotate(-135 50 50)" />
+            <path class="ico__ban ico__ban--slash" d="M21.7 21.7L78.3 78.3" pathLength="1" />
+          </svg>
+        </div>
+        <h3>Без рафинированных масел</h3>
+        <p>Никаких ультрапереработанных масел — только ингредиенты, которым место в еде. Если состав читается как домашка по химии, это не наш соус.</p>
+      </article>
+      <article class="pillar">
+        <div class="pillar__icon" aria-hidden="true">
+          <svg class="ico" viewBox="0 0 100 100">
+            <circle class="ico__bg" cx="50" cy="50" r="46" />
+            <g class="ico__obj">
+              <path d="M37 58h26l10 17a6 6 0 0 1-5 9H32a6 6 0 0 1-5-9z" fill="#7be08f" />
+              <circle class="ico__bubble" cx="44" cy="72" r="3.5" fill="#fff" />
+              <circle class="ico__bubble" cx="56" cy="68" r="2.5" fill="#fff" style="--bd: .4s" />
+              <circle class="ico__bubble" cx="50" cy="77" r="2" fill="#fff" style="--bd: .8s" />
+              <path d="M44 14v24L27 75a6 6 0 0 0 5 9h36a6 6 0 0 0 5-9L56 38V14" fill="none" stroke="#1d1410" stroke-width="3" stroke-linejoin="round" />
+              <path d="M40 14h20" stroke="#1d1410" stroke-width="3.5" stroke-linecap="round" />
+              <path d="M50 26h6M50 34h6" stroke="#1d1410" stroke-width="2" opacity=".5" />
+            </g>
+            <circle class="ico__ban" cx="50" cy="50" r="40" pathLength="1" transform="rotate(-135 50 50)" />
+            <path class="ico__ban ico__ban--slash" d="M21.7 21.7L78.3 78.3" pathLength="1" />
+          </svg>
+        </div>
+        <h3>Без добавок</h3>
+        <p>Без консервантов, ароматизаторов и красителей. Цвет — от перца и фруктов, вкус — от времени и огня.</p>
+      </article>
+    </section>
+
+    <section class="shop" id="shop">
+      <div class="section-head">
+        <p class="eyebrow">Магазин</p>
+        <h2>Хватит говорить о соусе. Пора его взять.</h2>
+      </div>
+      <div class="heat-filter" role="tablist" aria-label="Фильтр по остроте">
+        <button class="chip is-active" data-heat="all">Все</button>
+        <button class="chip" data-heat="0">Не остро</button>
+        <button class="chip" data-heat="2">Средне</button>
+        <button class="chip" data-heat="4">Огонь</button>
+      </div>
+      <div class="products" id="products"></div>
+
+      <div class="bundle">
+        <div class="bundle__fan" aria-hidden="true">
+          <img src="assets/cherry.jpg" alt="" loading="lazy" />
+          <img src="assets/pineapple.jpg" alt="" loading="lazy" />
+          <img src="assets/habanero.jpg" alt="" loading="lazy" />
+        </div>
+        <div class="bundle__text">
+          <p class="eyebrow eyebrow--light">Выгодно</p>
+          <h3>Возьмите сет из 3 и сэкономьте 400 ₽</h3>
+          <p>Любые три вкуса в одной коробке. Отличный подарок тому, кто «просто жарит мясо».</p>
+        </div>
+        <button class="btn btn--light magnetic" id="addBundle">Собрать сет — 1 670 ₽</button>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee">
+        <span>Сладко</span><b>✺</b><span>Остро</span><b>✺</b><span>Дымно</span><b>✺</b><span>Честно</span><b>✺</b>
+        <span>Сладко</span><b>✺</b><span>Остро</span><b>✺</b><span>Дымно</span><b>✺</b><span>Честно</span><b>✺</b>
+      </div>
+    </div>
+
+    <section class="real">
+      <h2>Просто настоящая еда</h2>
+      <p>Ничего не придётся гуглить — только перец, фрукты, уксус, чеснок и специи. Варим с нуля малыми партиями, а не на заводе. И добавляем немного характера.</p>
+      <ul class="ingredients">
+        <li>перец</li><li>ананас</li><li>вишня</li><li>персик</li><li>чеснок</li><li>яблочный уксус</li><li>тростниковый сахар</li><li>копчёная паприка</li>
+      </ul>
+    </section>
+
+    <section class="about" id="about">
+      <div class="about__img" aria-hidden="true" data-parallax="-0.08">
+        <div class="chef">👨‍🍳</div>
+        <div class="about__badge">20+ лет<br />на кухне</div>
+      </div>
+      <div class="about__text">
+        <p class="eyebrow">О нас</p>
+        <h2>Вкус как суперсила</h2>
+        <p>После двадцати лет на профессиональных кухнях хороший соус — это не угадайка. Мы слышим ингредиенты, как музыканты слышат аккорды: сладость, остроту, кислоту, глубину. Если что-то фальшивит — исправляем. Так в каждой бутылке появляется гармония.</p>
+        <h3>Знакомьтесь, шеф Дима</h3>
+        <p>Дима впервые сварил этот соус на работе, с нуля — и реакция была мгновенной. Гости просили добавки, повара спрашивали рецепт. Возник вопрос: почему ничего на полке не похоже на это? Он перепробовал всё. Ничего не дотянуло. Поэтому он вернулся на кухню и начал разливать по бутылкам сам.</p>
+      </div>
+    </section>
+
+    <section class="reviews">
+      <div class="section-head">
+        <p class="eyebrow">Отзывы</p>
+        <h2>Что говорят люди с грилем</h2>
+      </div>
+      <div class="reviews__grid">
+        <blockquote>«Теща впервые за 12 лет попросила рецепт. Я не сказал.»<cite>— Андрей, Подмосковье</cite></blockquote>
+        <blockquote>«Хабанеро — это не соус, это жизненный опыт. Беру ещё.»<cite>— Марина, Казань</cite></blockquote>
+        <blockquote>«Вишнёвый с рёбрышками — лучшее, что случилось с моими выходными.»<cite>— Олег, Санкт-Петербург</cite></blockquote>
+      </div>
+    </section>
+
+    <section class="faq" id="faq">
+      <div class="section-head">
+        <p class="eyebrow">FAQ</p>
+        <h2>Частые вопросы</h2>
+      </div>
+      <div class="faq__list">
+        <details>
+          <summary>Это правда так вкусно?</summary>
+          <p>Да. Мы бы не разливали его по бутылкам, если бы нет.</p>
+        </details>
+        <details>
+          <summary>Соусы без глютена?</summary>
+          <p>Да. В составе нет пшеницы и лишних загустителей — только чистый соус малыми партиями.</p>
+        </details>
+        <details>
+          <summary>Насколько это остро?</summary>
+          <p>Зависит от бутылки. Вишня–чеснок — мягкий и сладкий, совсем без остроты. Ананас–шрирача — лёгкий сбалансированный огонёк. Копчёный персик–чипотле начинается с персика и заканчивается дымным жаром. Хабанеро–чеснок — настоящая острота для тех, кто знает, на что идёт.</p>
+        </details>
+        <details>
+          <summary>Как хранить после открытия?</summary>
+          <p>В холодильнике до 2 месяцев. Хотя, честно, столько он не проживёт.</p>
+        </details>
+        <details>
+          <summary>Куда доставляете?</summary>
+          <p>По всей России курьером и в пункты выдачи. От 3 бутылок — доставка бесплатно.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <h2>Секретные рецепты и ранний доступ к новым вкусам</h2>
+      <form class="newsletter__form" id="newsletter">
+        <input type="email" required placeholder="ваш@email.ru" aria-label="Email" />
+        <button class="btn btn--primary" type="submit">Подписаться</button>
+      </form>
+      <p class="newsletter__msg" id="newsletterMsg" role="status"></p>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer__brand">
+      <a href="#top" class="logo logo--light">ДЫМОК<span>sauce co.</span></a>
+      <p>Крафтовые BBQ-соусы малыми партиями.</p>
+    </div>
+    <div>
+      <h4>Контакты</h4>
+      <p>Москва, Россия</p>
+      <p><a href="mailto:hello@dymok.example">hello@dymok.example</a></p>
+    </div>
+    <div>
+      <h4>Навигация</h4>
+      <p><a href="#shop">Магазин</a></p>
+      <p><a href="#about">О шефе</a></p>
+      <p><a href="#faq">Вопросы</a></p>
+    </div>
+    <p class="footer__copy">© <span id="year"></span> ДЫМОК. Все соусы защищены авторским правом и вкусом.</p>
+  </footer>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart" id="cart" aria-label="Корзина" aria-hidden="true">
+    <div class="cart__head">
+      <h3>Ваша корзина</h3>
+      <button class="cart__close" id="cartClose" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="cart__items" id="cartItems" data-lenis-prevent></div>
+    <div class="cart__foot">
+      <div class="cart__total"><span>Итого</span><strong id="cartTotal">0 ₽</strong></div>
+      <button class="btn btn--primary btn--block" id="checkout">Оформить заказ</button>
+    </div>
+  </aside>
+
+  <button class="to-top" id="toTop" aria-label="Наверх">
+    <svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" class="to-top__track" /><circle cx="28" cy="28" r="25" class="to-top__ring" id="toTopRing" /></svg>
+    <span>↑</span>
+  </button>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
