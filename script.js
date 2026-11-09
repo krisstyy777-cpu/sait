@@ -10,7 +10,7 @@ const PRODUCTS = [
     color: "#a3122a",
     bg: "#f6c9cf",
     img: "assets/cherry.jpg",
-    emoji: ["🍒", "🧄", "🍒"],
+    fruits: ["cherry", "habanero", "cherry"],
     tag: "Хит",
   },
   {
@@ -24,7 +24,7 @@ const PRODUCTS = [
     color: "#f4b400",
     bg: "#fde7a6",
     img: "assets/pineapple.jpg",
-    emoji: ["🍍", "🌶️", "🍍"],
+    fruits: ["pineapple", "habanero", "pineapple"],
   },
   {
     id: "peach",
@@ -37,7 +37,7 @@ const PRODUCTS = [
     color: "#ef7d2d",
     bg: "#fbd2ae",
     img: "assets/peach.jpg",
-    emoji: ["🍑", "🌶️", "🔥"],
+    fruits: ["peach", "habanero", "peach"],
     tag: "Новинка",
   },
   {
@@ -51,11 +51,12 @@ const PRODUCTS = [
     color: "#d7261e",
     bg: "#f7b3a4",
     img: "assets/habanero.jpg",
-    emoji: ["🌶️", "🔥", "🧄"],
+    fruits: ["habanero", "cherry", "habanero"],
   },
 ];
-const BUNDLE = { id: "bundle", name: "Сет из 3 соусов", short: "Сет", price: 1670, color: "#1d1410", bg: "#f4c331", img: "assets/peach.jpg", emoji: ["🍒", "🍍", "🍑", "🌶️"] };
+const BUNDLE = { id: "bundle", name: "Сет из 3 соусов", short: "Сет", price: 1670, color: "#1d1410", bg: "#f4c331", img: "assets/peach.jpg", fruits: ["cherry", "pineapple", "peach", "habanero"] };
 
+const fruitSrc = (f) => `assets/fruits/${f}.webp`;
 const rub = (n) => n.toLocaleString("ru-RU") + " ₽";
 const $ = (s) => document.querySelector(s);
 
@@ -83,7 +84,7 @@ $("#products").innerHTML = PRODUCTS.map(
     <div class="product__img" style="--c:${p.bg}">
       ${p.tag ? `<span class="tag">${p.tag}</span>` : ""}
       <img src="${p.img}" alt="Соус ${p.name}" loading="lazy" width="600" height="920" />
-      ${p.emoji.map((e, i) => `<span class="femoji" style="--x:${18 + i * 30}%;--d:${i * 0.45}s">${e}</span>`).join("")}
+      ${p.fruits.map((f, i) => `<img class="fruit" src="${fruitSrc(f)}" alt="" aria-hidden="true" loading="lazy" decoding="async" width="160" height="180" style="--x:${6 + i * 30}%;--d:${i * 0.55}s;--r:${i % 2 ? 1 : -1}" />`).join("")}
     </div>
     <div class="product__body">
       <h3>${p.name}</h3>
@@ -186,27 +187,65 @@ function celebrate(id, btn) {
     };
   });
 
+  // Fruit pieces pop out of the button with juice drops and a shockwave ring
   const cx = b.left + b.width / 2;
   const cy = b.top + b.height / 2;
-  for (let i = 0; i < 14; i++) {
-    const s = document.createElement("span");
+  const small = innerWidth < 520;
+  const spawn = (el, styles) => {
+    Object.assign(el.style, { left: cx + "px", top: cy + "px", ...styles });
+    document.body.append(el);
+    return el;
+  };
+
+  const ring = spawn(document.createElement("span"), { borderColor: item.color });
+  ring.className = "burst-ring";
+  ring.animate(
+    [
+      { transform: "translate(-50%,-50%) scale(.2)", opacity: 0.9 },
+      { transform: "translate(-50%,-50%) scale(3.2)", opacity: 0 },
+    ],
+    { duration: 650, easing: "cubic-bezier(.2,.7,.3,1)" }
+  ).onfinish = () => ring.remove();
+
+  const pieces = small ? 8 : 11;
+  for (let i = 0; i < pieces; i++) {
+    const s = document.createElement("img");
     s.className = "burst";
-    s.textContent = item.emoji[i % item.emoji.length];
-    s.style.left = cx + "px";
-    s.style.top = cy + "px";
-    document.body.append(s);
-    const ang = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
-    const dist = 70 + Math.random() * 90;
+    s.alt = "";
+    s.src = fruitSrc(item.fruits[i % item.fruits.length]);
+    spawn(s, { width: (small ? 30 : 38) + Math.random() * 26 + "px" });
+    const ang = (Math.PI * 2 * i) / pieces + Math.random() * 0.5;
+    const dist = (small ? 60 : 80) + Math.random() * 90;
     const x = Math.cos(ang) * dist;
-    const y = Math.sin(ang) * dist - 40;
+    const y = Math.sin(ang) * dist - 60;
+    const spin = (Math.random() < 0.5 ? -1 : 1) * (180 + Math.random() * 360);
     s.animate(
       [
-        { transform: "translate(-50%,-50%) scale(.2) rotate(0deg)", opacity: 1 },
-        { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1.2) rotate(${Math.random() * 360}deg)`, opacity: 1, offset: 0.55 },
-        { transform: `translate(calc(-50% + ${x * 1.2}px), calc(-50% + ${y + 120}px)) scale(.6) rotate(${Math.random() * 720}deg)`, opacity: 0 },
+        { transform: "translate(-50%,-50%) scale(.1) rotate(0deg)", opacity: 0 },
+        { transform: `translate(calc(-50% + ${x * 0.6}px), calc(-50% + ${y * 0.6}px)) scale(1.25) rotate(${spin * 0.3}deg)`, opacity: 1, offset: 0.25 },
+        { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1) rotate(${spin * 0.6}deg)`, opacity: 1, offset: 0.55 },
+        { transform: `translate(calc(-50% + ${x * 1.25}px), calc(-50% + ${y + 160}px)) scale(.5) rotate(${spin}deg)`, opacity: 0 },
       ],
-      { duration: 1100 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.4,1)" }
+      { duration: 1200 + Math.random() * 500, delay: Math.random() * 80, easing: "cubic-bezier(.2,.7,.4,1)", fill: "backwards" }
     ).onfinish = () => s.remove();
+  }
+
+  for (let i = 0; i < (small ? 6 : 10); i++) {
+    const size = 6 + Math.random() * 8 + "px";
+    const d = spawn(document.createElement("span"), { width: size, height: size, background: item.color });
+    d.className = "juice";
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 70;
+    const x = Math.cos(ang) * dist;
+    const y = Math.sin(ang) * dist - 30;
+    d.animate(
+      [
+        { transform: "translate(-50%,-50%) scale(0)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1)`, opacity: 1, offset: 0.4 },
+        { transform: `translate(calc(-50% + ${x * 1.1}px), calc(-50% + ${y + 90}px)) scale(.3)`, opacity: 0 },
+      ],
+      { duration: 800 + Math.random() * 300, easing: "cubic-bezier(.3,.6,.5,1)" }
+    ).onfinish = () => d.remove();
   }
 }
 
@@ -410,6 +449,117 @@ if (finePointer && !reduceMotion) {
       card.style.removeProperty("--ry");
     });
   });
+
+  // Custom cursor "ember": glowing dot, a trailing ring that stretches with speed,
+  // a rotating label over targets, and a canvas trail of sparks and smoke
+  const root = document.documentElement;
+  const dot = document.createElement("div");
+  const cRing = document.createElement("div");
+  const cv = document.createElement("canvas");
+  dot.className = "cursor-dot";
+  cRing.className = "cursor-ring";
+  cv.className = "cursor-trail";
+  cRing.innerHTML = `<span class="cursor-ring__blob"><img alt="" /></span>
+    <svg class="cursor-ring__label" viewBox="0 0 100 100"><defs><path id="cursorCircle" d="M50 50m-41 0a41 41 0 1 1 82 0a41 41 0 1 1-82 0" /></defs>
+    <text><textPath href="#cursorCircle" textLength="255" lengthAdjust="spacing"></textPath></text></svg>`;
+  [dot, cRing, cv].forEach((el) => el.setAttribute("aria-hidden", "true"));
+  document.body.append(cv, cRing, dot);
+  root.classList.add("has-cursor");
+  const blob = cRing.querySelector(".cursor-ring__blob");
+  const cRingImg = cRing.querySelector("img");
+  const label = cRing.querySelector("textPath");
+  const ctx = cv.getContext("2d");
+  const fit = () => {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    cv.width = innerWidth * d;
+    cv.height = innerHeight * d;
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+  };
+  fit();
+  addEventListener("resize", fit);
+
+  const parts = [];
+  const spark = (x, y, speed = 1) => {
+    const a = Math.random() * Math.PI * 2;
+    const v = (0.4 + Math.random() * 1.6) * speed;
+    parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.6 * speed, life: 0, max: 30 + Math.random() * 30, size: 1.2 + Math.random() * 2, hue: 15 + Math.random() * 35, smoke: false });
+  };
+  const smoke = (x, y) =>
+    parts.push({ x, y, vx: (Math.random() - 0.5) * 0.6, vy: -0.4 - Math.random() * 0.5, life: 0, max: 50 + Math.random() * 30, size: 3 + Math.random() * 3, smoke: true });
+
+  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, px = mx, py = my, travel = 0;
+  addEventListener("mousemove", (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    dot.style.translate = `${mx}px ${my}px`;
+    root.classList.remove("cursor-out");
+  }, { passive: true });
+  document.addEventListener("mouseleave", () => root.classList.add("cursor-out"));
+  addEventListener("mousedown", () => {
+    cRing.classList.add("is-down");
+    for (let i = 0; i < 18; i++) spark(mx, my, 2.4);
+  });
+  addEventListener("mouseup", () => cRing.classList.remove("is-down"));
+
+  const repeat = (word) => Array(Math.max(2, Math.round(26 / (word.length + 3)))).fill(word + " ✦ ").join("");
+  document.addEventListener("mouseover", (e) => {
+    const t = e.target;
+    const product = t.closest(".product__img");
+    const text = t.closest("input, textarea");
+    const link = !product && !text && t.closest("a, button, summary, label, [role=button]");
+    cRing.classList.toggle("is-text", !!text);
+    cRing.classList.toggle("is-link", !!link);
+    cRing.classList.toggle("is-fruit", !!product);
+    if (product) {
+      const item = findItem(product.closest(".product").id.slice(2));
+      cRingImg.src = fruitSrc(item.fruits[0]);
+      label.textContent = repeat(item.short.toUpperCase());
+    } else if (link) {
+      label.textContent = repeat(link.matches(".add, [data-add]") ? "В КОРЗИНУ" : "ЖМИ");
+    }
+  });
+
+  (function frame() {
+    rx += (mx - rx) * 0.16;
+    ry += (my - ry) * 0.16;
+    const dx = mx - rx, dy = my - ry;
+    const stretch = Math.min(Math.hypot(dx, dy) / 90, 0.35);
+    cRing.style.translate = `${rx}px ${ry}px`;
+    blob.style.transform = `rotate(${Math.atan2(dy, dx)}rad) scale(${1 + stretch}, ${1 - stretch * 0.6})`;
+
+    const moved = Math.hypot(mx - px, my - py);
+    if (moved > 0.5 && !root.classList.contains("cursor-out")) {
+      travel += moved;
+      for (let i = 0; i < Math.min(moved / 10, 3); i++) spark(mx, my, 0.6);
+      while (travel > 22) { smoke(mx, my); travel -= 22; }
+    }
+    px = mx;
+    py = my;
+    if (parts.length > 260) parts.splice(0, parts.length - 260);
+
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.life++;
+      const k = p.life / p.max;
+      if (k >= 1) { parts.splice(i, 1); continue; }
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.96;
+      ctx.beginPath();
+      if (p.smoke) {
+        p.vy *= 0.99;
+        ctx.fillStyle = `rgba(58, 42, 34, ${0.16 * (1 - k)})`;
+        ctx.arc(p.x, p.y, p.size + k * 16, 0, Math.PI * 2);
+      } else {
+        p.vy = p.vy * 0.96 - 0.03;
+        ctx.fillStyle = `hsla(${p.hue - k * 20}, 100%, ${60 - k * 25}%, ${1 - k})`;
+        ctx.arc(p.x, p.y, p.size * (1 - k * 0.5), 0, Math.PI * 2);
+      }
+      ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  })();
 }
 
 // Per-frame scroll effects: progress, header, parallax, marquee
